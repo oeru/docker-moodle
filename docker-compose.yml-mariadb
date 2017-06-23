@@ -1,0 +1,45 @@
+version: "2"
+
+services:
+    moodle:
+#        image: autoize/moodle
+        image: oeru/moodle
+        links:
+            - moodledb:mysql
+        environment:
+            MOODLE_DB_HOST: 172.17.0.1
+            MOODLE_DB_NAME: moodle
+            MOODLE_DB_USER: moodle
+            MOODLE_DB_PASSWORD: bpDxyf53nrwX
+        expose:
+            - 9000
+        volumes:
+            - /home/data/moodle:/var/www/html
+        restart:
+            unless-stopped
+    nginx:
+        image: nginx
+        links:
+            - moodle:moodle
+        ports:
+            - 127.0.0.1:8083:80
+        volumes:
+            - /home/dave/Projects/docker/docker-moodle/conf/nginx:/etc/nginx/conf.d
+            - /home/dave/Projects/docker/docker-moodle/data/moodle:/var/www/html
+        restart:
+            unless-stopped
+    moodledb:
+        image: mariadb:10.0
+        build:
+            args:
+                character-set-server: utf8mb4
+                collation-server: utf8mb4_unicode_ci
+        environment:
+            MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
+        ports:
+            - 3306:3306
+        volumes:
+            - /home/data/mariadb/data/mysql:/var/lib/mysql
+            - /home/data/mariadb/data/backups:/var/lib/automysqlbackup
+        restart:
+            unless-stopped
