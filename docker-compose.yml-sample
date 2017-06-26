@@ -11,6 +11,7 @@ services:
 #            - moodledb:mysql
         # create a suitable database before running 'docker-compose up'
         environment:
+            MOODLE_DOMAIN: [domain name]
             MOODLE_DB_HOST: [hostname or IP]
             MOODLE_DB_NAME: moodle
             MOODLE_DB_USER: moodle

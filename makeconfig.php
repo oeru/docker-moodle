@@ -1,124 +1,55 @@
 <?php
-// Args: 0 => makedb.php, 1 => "$MOODLE_DB_HOST", 2 => "$MOODLE_DB_USER", 3 => "$MOODLE_DB_PASSWORD", 4 => "$MOODLE_DB_NAME"
+/* Args:
+0 => makedb.php,
+1 => "$MOODLE_DOMAIN",
+2 => "$MOODLE_DB_HOST",
+3 => "$MOODLE_DB_USER",
+4 => "$MOODLE_DB_PASSWORD",
+5 => "$MOODLE_DB_NAME",
+*/
 $stderr = fopen('php://stderr', 'w');
 
 fwrite($stderr, "\nWriting initial Moodle config\n");
 
+$domain = $argv[1];
 // Figure out if we have a port in the database host string
-if (strpos($argv[1], ':') !== false)
-{
-	list($host, $port) = explode(':', $argv[1], 2);
+if (strpos($argv[2], ':') !== false) {
+	list($host, $port) = explode(':', $argv[2], 2);
 }
-else
-{
-	$host = $argv[1];
+else {
+  $host = $argv[2];
 	$port = 3306;
 }
+$user = $argv[3];
+$password = addslashes($argv[4]);
+$dbname = $argv[5];
 
-$parameters = array(
-	'db_driver'      => 'pdo_mysql',
-	'db_host'        => $host,
-	'db_port'        => $port,
-	'db_name'        => $argv[4],
-	'db_user'        => $argv[2],
-	'db_password'    => $argv[3],
-	'install_source' => 'Docker'
-);
+$string = "<?php\n";
+$string .= "unset(\$CFG);\n";
+$string .= "global \$CFG;\n";
+$string .= "\$CFG = new stdClass();\n";
+$string .= "\$CFG->wwwroot = '".$domain."';\n";
+$string .= "\$CFG->dataroot = '/var/www/html/moodledata';\n";
+$string .= "\$CFG->directorypermissions = 02777;\n";
+$string .= "\$CFG->admin = 'admin';\n";
+$string .= "\$CFG->dbtype = 'mysqli';\n";
+$string .= "\$CFG->dblibrary = 'native';\n";
+$string .= "\$CFG->dbhost = '".$host."';\n";
+$string .= "\$CFG->dbuser = '".$user."';\n";
+$string .= "\$CFG->dbpass = '".$password."';\n";
+$string .= "\$CFG->dbname = '".$dbname."';\n";
+$string .= "\$CFG->prefix = 'mdl_';\n";
+$string .= "\$CFG->dboptions = array(\n";
+$string .= "    'dbpersist' = false,\n";
+$string .= "    'dbsocket' = false,\n";
+$string .= "    'dbport' = $port,\n";
+$string .= ");\n";
+$string .= "require_once(__DIR__ . '/lib/setup.php'); // Do not edit\n";
 
-$path     = '/var/www/html/app/config/local.php';
-$rendered = render($parameters);
+$path     = '/var/www/html/config.php';
 
-$status = file_put_contents($path, $rendered);
+$status = file_put_contents($path, $string);
 
 if ($status === false) {
-	fwrite($stderr, "\nCould not write configuration file to $path, you can create this file with the following contents:\n\n$rendered\n");
-}
-
-/**
- * Renders parameters as a string.
- *
- * @param array $parameters
- *
- * @return string
- */
-function render(array $parameters)
-{
-	$string = "<?php\n";
-	$string .= "\$parameters = array(\n";
-
-	foreach ($parameters as $key => $value)
-	{
-		if ($value !== '')
-		{
-			if (is_string($value))
-			{
-				$value = "'" . addslashes($value) . "'";
-			}
-			elseif (is_bool($value))
-			{
-				$value = ($value) ? 'true' : 'false';
-			}
-			elseif (is_null($value))
-			{
-				$value = 'null';
-			}
-			elseif (is_array($value))
-			{
-				$value = renderArray($value);
-			}
-
-			$string .= "\t'$key' => $value,\n";
-		}
-	}
-
-	$string .= ");\n";
-
-	return $string;
-}
-
-/**
- * Renders an array of parameters as a string.
- *
- * @param array $array
- * @param bool  $addClosingComma
- *
- * @return string
- */
-function renderArray(array $array, $addClosingComma = false)
-{
-	$string = "array(";
-	$first  = true;
-
-	foreach ($array as $key => $value)
-	{
-		if (!$first)
-		{
-			$string .= ',';
-		}
-
-		if (is_string($key))
-		{
-			$string .= '"' . $key . '" => ';
-		}
-
-		if (is_array($value))
-		{
-			$string .= $this->renderArray($value, true);
-		}
-		else
-		{
-			$string .= '"' . addslashes($value) . '"';
-		}
-
-		$first = false;
-	}
-
-	$string .= ")";
-
-	if ($addClosingComma)
-	{
-		$string .= ',';
-	}
-
-	return $string;
+	fwrite($stderr, "\nCould not write configuration file to $path, you can create this file with the following contents:\n\n$string\n");
 }

@@ -73,6 +73,7 @@ echo >&2 "======================================================================
 echo >&2
 echo >&2 "This server is now configured to run Moodle!"
 echo >&2 "You will need the following database information to install Moodle:"
+echo >&2 "Domain: $MOODLE_DOMAIN"
 echo >&2 "Host Name: $MOODLE_DB_HOST"
 echo >&2 "Database Name: $MOODLE_DB_NAME"
 echo >&2 "Database Username: $MOODLE_DB_USER"
@@ -81,11 +82,11 @@ echo >&2
 echo >&2 "========================================================================"
 
 # Write the database connection to the config so the installer prefills it
-if ! [ -e app/config/local.php ]; then
-    php /makeconfig.php "$MOODLE_DB_HOST" "$MOODLE_DB_USER" "$MOODLE_DB_PASSWORD" "$MOODLE_DB_NAME"
+if ! [ -e config.php ]; then
+    php /makeconfig.php "$MOODLE_DOMAIN" "$MOODLE_DB_HOST" "$MOODLE_DB_USER" "$MOODLE_DB_PASSWORD" "$MOODLE_DB_NAME"
 
     # Make sure our web user owns the config file if it exists
-    chown www-data:www-data app/config/local.php
+    chown www-data:www-data config.php
 fi
 
 exec "$@"
