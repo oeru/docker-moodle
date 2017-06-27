@@ -62,6 +62,7 @@ if ! [ -e vendor/autoload.php ]; then
         mkdir -p .git/hooks
     fi
     composer install
+    chown -R www-data:www-data vendor
 else
     echo >&2 "vendor dependencies already in place."
 fi
@@ -82,11 +83,11 @@ echo >&2
 echo >&2 "========================================================================"
 
 # Write the database connection to the config so the installer prefills it
-if ! [ -e config.php ]; then
-    php /makeconfig.php "$MOODLE_DOMAIN" "$MOODLE_DB_HOST" "$MOODLE_DB_USER" "$MOODLE_DB_PASSWORD" "$MOODLE_DB_NAME"
-
-    # Make sure our web user owns the config file if it exists
-    chown www-data:www-data config.php
-fi
+#if ! [ -e config.php ]; then
+#    php /makeconfig.php "$MOODLE_DOMAIN" "$MOODLE_DB_HOST" "$MOODLE_DB_USER" "$MOODLE_DB_PASSWORD" "$MOODLE_DB_NAME"
+#
+#    # Make sure our web user owns the config file if it exists
+#    chown www-data:www-data config.php
+#fi
 
 exec "$@"

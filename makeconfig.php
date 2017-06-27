@@ -40,9 +40,10 @@ $string .= "\$CFG->dbpass = '".$password."';\n";
 $string .= "\$CFG->dbname = '".$dbname."';\n";
 $string .= "\$CFG->prefix = 'mdl_';\n";
 $string .= "\$CFG->dboptions = array(\n";
-$string .= "    'dbpersist' = false,\n";
-$string .= "    'dbsocket' = false,\n";
-$string .= "    'dbport' = $port,\n";
+$string .= "    'dbpersist' => false,\n";
+$string .= "    'dbsocket' => false,\n";
+$string .= "    'dbport' => $port,\n";
+$string .= "    'dbcollation' => 'utf8mb4_unicode_ci',\n";
 $string .= ");\n";
 $string .= "require_once(__DIR__ . '/lib/setup.php'); // Do not edit\n";
 
