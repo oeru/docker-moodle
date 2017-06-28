@@ -22,6 +22,8 @@ RUN echo 'date.timezone = "Pacific/Auckland"' >> /usr/local/etc/php/conf.d/php.i
 RUN echo 'cgi.fix_pathinfo = 1' >> /usr/local/etc/php/conf.d/php.ini
 RUN echo 'session.auto_start = 0' >> /usr/local/etc/php/conf.d/php.ini
 RUN echo 'sendmail_path = /usr/bin/msmtp -t' >> /usr/local/etc/php/conf.d/php.ini
+RUN echo 'upload_max_filesize = 100M' >> /usr/local/etc/php/conf.d/php.ini
+RUN echo 'post_max_size = 150M' >> /usr/local/etc/php/conf.d/php.ini
 RUN echo '[opcache]' >> /usr/local/etc/php/conf.d/php.ini
 RUN echo 'opcache.enable = 1' >> /usr/local/etc/php/conf.d/php.ini
 RUN echo 'opcache.memory_consumption = 128' >> /usr/local/etc/php/conf.d/php.ini
