@@ -50,6 +50,25 @@ If you're running MySQL or MariaDB in another container, add another stanza to t
 
 This has been tested on Docker 1.13.1 on Ubuntu Linux 16.04 and requires Docker 1.10.x or better.
 
+# Notes
+
+1. need to configure local MySQL or MariaDB to bind to 0.0.0.0 rather than 127.0.0.1
+
+1. need to make configuration changes to DB - for mariadb, edit `/etc/mysql/mariadb.conf.d/50-server.cnf` and add under `[mysqld] the following lines:
+
+
+  innodb_file_format = Barracuda
+  innodb_file_per_table = 1
+  innodb_large_prefix
+  character-set-server = utf8mb4
+  collation-server = utf8mb4_unicode_ci
+  skip-character-set-client-handshake
+
+1. if you're using SSL (like Let's Encrypt) make sure that your moodle/src/config.php includes the line 
+
+  $CFG->sslproxy=true;
+
+
 # User Feedback
 
 ## Issues
