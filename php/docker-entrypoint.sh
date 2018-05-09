@@ -2,6 +2,19 @@
 
 set -e
 
+# check if the cron daemon is running. If not, start it.
+if ! [ `service cron status | grep -c "cron is running"` ]; then
+    echo >&2 "firing up cron daemon"
+    service cron start
+    if [ `service cron status | grep -c "cron is running"` ]; then
+        echo >&2 "cron now running..."
+    else
+        echo >&2 "cron failed to start!"
+    fi
+else
+    echo >&2 "cron already running!"
+fi
+
 if [ -n "$MYSQL_PORT_3306_TCP" ]; then
     if [ -z "$MOODLE_DB_HOST" ]; then
             MOODLE_DB_HOST='mysql'
@@ -61,8 +74,9 @@ if ! [ -e vendor/autoload.php ]; then
         echo >&2 "creating a .git/hooks dir to avoid errors"
         mkdir -p .git/hooks
     fi
-    composer install
-    chown -R www-data:www-data vendor
+# we don't actually want these vendor deps on a production site
+#    composer install
+#    chown -R www-data:www-data vendor
 else
     echo >&2 "vendor dependencies already in place."
 fi
