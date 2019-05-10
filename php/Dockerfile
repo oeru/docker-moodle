@@ -1,4 +1,4 @@
-FROM php:7.0-fpm
+FROM php:7-fpm
 MAINTAINER Dave Lane <dave@oerfoundation.org> (@lightweight)
 # based on that by MAINTAINER Michael Babker <michael.babker@moodle.org> (@mbabker)
 
@@ -13,7 +13,7 @@ RUN apt-get install -y cron msmtp
 RUN rm -rf /var/lib/apt/lists/*
 # install relevant PHP extensions
 RUN docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos
-RUN docker-php-ext-install bz2 curl gd imap intl mbstring mcrypt mysqli \
+RUN docker-php-ext-install bz2 curl gd imap intl mbstring mysqli \
     opcache pdo pdo_mysql pspell soap xmlrpc zip
 # address Moodle-specific PHP config requirements
 # php.ini
