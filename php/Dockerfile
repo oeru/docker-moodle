@@ -1,20 +1,28 @@
-FROM php:7-fpm
+FROM php:8.0-fpm
 MAINTAINER Dave Lane <dave@oerfoundation.org> (@lightweight)
 # based on that by MAINTAINER Michael Babker <michael.babker@moodle.org> (@mbabker)
 
 # Install PHP extensions
-RUN apt-get update && apt-get install -y apt-utils git less libbz2-dev libc-client-dev \
-    libcurl4-gnutls-dev libicu-dev libkrb5-dev libmcrypt-dev libpng-dev \
+RUN apt-get update && apt-get install -y apt-utils git imagemagick less libbz2-dev libc-client-dev \
+    libcurl4-gnutls-dev libicu-dev libkrb5-dev libmcrypt-dev libonig-dev libpng-dev \
     libpspell-dev libssl-dev libxml2-dev libzip-dev telnet unzip zip
 RUN apt-get install -y net-tools vim dnsutils
 # install cron and msmtp for outgoing email
 RUN apt-get install -y cron msmtp
+RUN apt-get install -y libgd3 libhd-dev libwebp-dev libjpeg62-turbo-dev libpng-dev libxpm-dev libfreetype6-dev
 # clean up
 RUN rm -rf /var/lib/apt/lists/*
 # install relevant PHP extensions
 RUN docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos
+RUN docker-php-ext-configure gd #--with-gd --with-webp-dir --with-jpeg-dir --with-freetype-dir --with-png-dir --with-zlib-dir --with-freetype-dir
+
 RUN docker-php-ext-install bz2 curl gd imap intl mbstring mysqli \
-    opcache pdo pdo_mysql pspell soap xmlrpc zip
+    opcache pdo pdo_mysql pspell soap zip
+
+# https://stackoverflow.com/questions/75366708/install-xml-rpc-in-php8-dockerfile
+RUN pecl install channel://pecl.php.net/xmlrpc-1.0.0RC3  xmlrpc
+RUN docker-php-ext-enable xmlrpc
+
 # address Moodle-specific PHP config requirements
 # php.ini
 RUN set -ex \
@@ -29,6 +37,7 @@ RUN set -ex \
         echo 'upload_max_filesize = 100M'; \
         echo 'post_max_size = 150M'; \
         echo 'max_execution_time = 1800'; \
+        echo 'max_input_vars = 5000'; \
         echo '[opcache]'; \
         echo 'opcache.enable = 1'; \
         echo 'opcache.memory_consumption = 128'; \

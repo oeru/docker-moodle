@@ -5,6 +5,13 @@ Docker Moodle Image
 Moodle (and this Docker Recipe) is distributed under the GPL v3 license. Full details of the license can be found in the [Moodle Docs](https://docs.moodle.org/dev/License).
 
 
+# Latest images:
+
+20230501:
+
+oeru/moodle:php80-fpm
+oeru/moodle-cron:php80-fpm
+
 
 # How to use this image
 
