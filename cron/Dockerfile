@@ -1,4 +1,4 @@
-FROM oeru/moodle:php80-fpm
+FROM oeru/moodle:php82-fpm
 MAINTAINER Dave Lane <dave@oerfoundation.org> https://oeru.org (@lightweight)
 
 # set up vital cron tasks

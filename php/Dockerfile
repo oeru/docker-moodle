@@ -1,4 +1,4 @@
-FROM php:8.0-fpm
+FROM php:8.2-fpm
 MAINTAINER Dave Lane <dave@oerfoundation.org> (@lightweight)
 # based on that by MAINTAINER Michael Babker <michael.babker@moodle.org> (@mbabker)
 
@@ -16,7 +16,7 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos
 RUN docker-php-ext-configure gd #--with-gd --with-webp-dir --with-jpeg-dir --with-freetype-dir --with-png-dir --with-zlib-dir --with-freetype-dir
 
-RUN docker-php-ext-install bz2 curl gd imap intl mbstring mysqli \
+RUN docker-php-ext-install bz2 curl exif gd imap intl mbstring mysqli \
     opcache pdo pdo_mysql pspell soap zip
 
 # https://stackoverflow.com/questions/75366708/install-xml-rpc-in-php8-dockerfile
