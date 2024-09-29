@@ -7,6 +7,12 @@ Moodle (and this Docker Recipe) is distributed under the GPL v3 license. Full de
 
 # Latest images:
 
+
+20240930:
+
+oeru/moodle:php83-fpm
+oeru/moodle-cron:php83-fpm
+
 20240929:
 
 oeru/moodle:php81-fpm

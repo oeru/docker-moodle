@@ -1,4 +1,4 @@
-FROM php:8.1-fpm
+FROM php:8.3-fpm
 MAINTAINER Dave Lane <dave@oerfoundation.org> (@lightweight)
 # based on that by MAINTAINER Michael Babker <michael.babker@moodle.org> (@mbabker)
 
